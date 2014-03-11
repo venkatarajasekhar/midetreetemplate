@@ -9,10 +9,15 @@ package com.midetree.server;
 import android.content.Context;
 import android.util.Log;
 
+import java.lang.ref.WeakReference;
+
 
 public final class MidetreeService {
     static final String TAG = MidetreeService.class.getSimpleName();
     private static final boolean DEBUG = true;
+
+    // These match the enums in vendor\altek\externel\midetree\native\libContinuaManager\ContinuaManager.h
+    private static final int CONTINUA_MANAGER_MSG_NOTIFY1 = 0x0001;
 
 
     static {
@@ -20,11 +25,21 @@ public final class MidetreeService {
         System.loadLibrary("midetree_jni");
     }
 
+
+    private static onJNIListener mListener = null;
+    
+    private int mNativeContext; // accessed by native methods
    
     @SuppressWarnings("unused")
     public MidetreeService(Context context) {
        printI("MidetreeService startup");
+       _native_setup(new WeakReference<MidetreeService>(this));
 
+    }
+    
+    public void setOnJNIListener(onJNIListener listener) {
+        
+        mListener = listener;
     }
     
     
@@ -35,23 +50,59 @@ public final class MidetreeService {
         
     }
     
+    public void function2() {
+       printI("function2 ");
+       
+       _function2();    
+        
+    }
     
-    private void printI(String str) {
+    public void release() {
+       printI("release ");
+       
+       _native_release();    
+        
+    }
+    
+    
+    private static void printI(String str) {
      
         if(DEBUG) Log.i(TAG, str);
         
     }    
     
     
-     // ---------------------------------------------------------
+    // ---------------------------------------------------------
     // Java methods called from the native side
     // --------------------
+    private static void postEventFromNative(int what)
+    {
+        printI("postEventFromNative ");
+        
+        switch(what) {
+        case CONTINUA_MANAGER_MSG_NOTIFY1:
+            mListener.onCallBackFunc1();
+        break;    
+        default:
+        break;    
+        }    
+        
+    }
     
     
+    public interface onJNIListener {
+        
+        void onCallBackFunc1();
+        
+    }
     
     
     // ---------------------------------------------------------
     // native methods called from the java side
-    // --------------------    
+    // --------------------
+    private native final void _native_setup(Object mindtree_this);
+    private native final void _native_release();    
     private native final void _function1();
+    private native final void _function2();
+    
 }

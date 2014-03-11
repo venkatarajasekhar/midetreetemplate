@@ -4,14 +4,42 @@
  
 #include <utils/RefBase.h>  
 
+void onCallbackFunct();
   
 namespace android {  
 
+class Mutex;
+
+enum {
+    CONTINUA_MANAGER_MSG_NOTIFY1 = 0x0001,            // notifyCallback
+};
+
+class ContinuaManagerListener : public RefBase
+{
+public:    
+    virtual void notify(int32_t msgType) = 0;    
+        
+};
+
 class ContinuaManager : public RefBase  
 {  
-public:  
-    ContinuaManager();  
-    virtual ~ContinuaManager();  
+public:
+    static  int isCreate;
+    static  sp<ContinuaManager>  instance;
+    static  sp<ContinuaManager>  create();  
+      
+    virtual ~ContinuaManager(); 
+    
+    void function1();
+    
+    void setListener(const sp<ContinuaManagerListener>& listener);
+    void notifyCallback(int32_t msgType);
+    
+private:
+    ContinuaManager();
+    
+    sp<ContinuaManagerListener>  mListener;
+    static Mutex mLock;     
 };  
 
 }; //namespace  

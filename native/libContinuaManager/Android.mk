@@ -29,7 +29,8 @@ LOCAL_LDLIBS := -llog
 LOCAL_SHARED_LIBRARIES := \
     liblog \
     libcutils \
-    libutils
+    libutils \
+    libbinder
     
 LOCAL_SRC_FILES := \
     ContinuaManager.cpp

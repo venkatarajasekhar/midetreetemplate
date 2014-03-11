@@ -25,7 +25,8 @@ LOCAL_SHARED_LIBRARIES := \
     libandroid_runtime \
 	libcutils \
 	libutils \
-	libui
+	libui \
+	libContinuaManager
 
 # No static libraries.
 LOCAL_STATIC_LIBRARIES :=
@@ -33,11 +34,10 @@ LOCAL_STATIC_LIBRARIES :=
 # Also need the JNI headers.
 LOCAL_C_INCLUDES += \
 	$(JNI_H_INCLUDE) \
-	../native/libContinuaManager/
+	vendor/altek/externel/midetree/native/libContinuaManager/
 
 # No specia compiler flags.
 LOCAL_CFLAGS +=
-
 
 LOCAL_MODULE    := libmidetree_jni
 
