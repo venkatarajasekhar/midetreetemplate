@@ -75,7 +75,8 @@ void ContinuaManager::setListener(const sp<ContinuaManagerListener>& listener)
 }
 
 // callback from mindtree lib
-void ContinuaManager::notifyCallback(int32_t msgType)
+void ContinuaManager::notifyCallback(int32_t msgType, 
+                                int32_t ext1, int32_t ext2, int32_t ext3, int32_t ext4)
 {
     LOGV("[%s] enter\n", __FUNCTION__);
     LOGV("[%s]: msgType[%d]\n", __FUNCTION__, msgType);    
@@ -85,7 +86,7 @@ void ContinuaManager::notifyCallback(int32_t msgType)
         listener = mListener;
     }
     if (listener != NULL) {
-        listener->notify(msgType);
+        listener->notify(msgType, ext1, ext2, ext3, ext4);
     }
 }
 
@@ -108,11 +109,11 @@ void ContinuaManager::printRefCount()
 using namespace android;
 
 // callback from mindtree lib
-void onCallbackFunct()
+void onLibCallbackFunct()
 {
     LOGV("[%s] enter\n", __FUNCTION__);    
     sp<ContinuaManager> manager = ContinuaManager::create();
     
-    manager->notifyCallback(CONTINUA_MANAGER_MSG_NOTIFY1);      
+    manager->notifyCallback(CONTINUA_MANAGER_MSG_NOTIFY1, 0, 1, 2, 3);      
     
 }      

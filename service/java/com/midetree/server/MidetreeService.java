@@ -75,13 +75,13 @@ public final class MidetreeService {
     // ---------------------------------------------------------
     // Java methods called from the native side
     // --------------------
-    private static void postEventFromNative(int what)
+    private static void postEventFromNative(int what, int arg1, int arg2, int arg3, int arg4)
     {
         printI("postEventFromNative ");
         
         switch(what) {
         case CONTINUA_MANAGER_MSG_NOTIFY1:
-            mListener.onCallBackFunc1();
+            mListener.onCallBackFunc1(arg1, arg2, arg3, arg4);
         break;    
         default:
         break;    
@@ -92,7 +92,7 @@ public final class MidetreeService {
     
     public interface onJNIListener {
         
-        void onCallBackFunc1();
+        void onCallBackFunc1(int arg1, int arg2, int arg3, int arg4);
         
     }
     

@@ -6,7 +6,7 @@
 
 #define INITIAL_STRONG_VALUE (1<<28)
 
-void onCallbackFunct();
+void onLibCallbackFunct();
   
 namespace android {  
 
@@ -19,7 +19,11 @@ enum {
 class ContinuaManagerListener : public RefBase
 {
 public:    
-    virtual void notify(int32_t msgType) = 0;    
+    virtual void notify(int32_t msgType, 
+                        int32_t ext1, 
+                        int32_t ext2, 
+                        int32_t ext3, 
+                        int32_t ext4) = 0;    
         
 };
 
@@ -35,7 +39,11 @@ public:
     void function1();
     
     void setListener(const sp<ContinuaManagerListener>& listener);
-    void notifyCallback(int32_t msgType);
+    void notifyCallback(int32_t msgType,
+                        int32_t ext1, 
+                        int32_t ext2, 
+                        int32_t ext3, 
+                        int32_t ext4);
     
     //debug
     void printRefCount();

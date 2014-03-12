@@ -64,7 +64,7 @@ public:
      JNIContinuaManagerContext(JNIEnv* env , jobject weak_this, jclass clazz);
      virtual ~JNIContinuaManagerContext() { release(); }
      
-     virtual void notify(int32_t msgType);
+     virtual void notify(int32_t msgType, int32_t ext1, int32_t ext2, int32_t ext3, int32_t ext4);
      
      
      void release();
@@ -109,7 +109,10 @@ void JNIContinuaManagerContext::release()
  
 }
 
-void JNIContinuaManagerContext::notify(int32_t msgType)
+void JNIContinuaManagerContext::notify(int32_t msgType, int32_t ext1, 
+                        int32_t ext2, 
+                        int32_t ext3, 
+                        int32_t ext4)
 {
     LOGI("[%s] enter\n", __FUNCTION__);
 
@@ -127,7 +130,7 @@ void JNIContinuaManagerContext::notify(int32_t msgType)
      * to the Java app.
      */
 
-    env->CallStaticVoidMethod(mContinuaManagerJClass, fields.midSfunct1, msgType);
+    env->CallStaticVoidMethod(mContinuaManagerJClass, fields.midSfunct1, msgType, ext1, ext2, ext3, ext4);
 }
 
 //debug
@@ -225,7 +228,7 @@ function2(JNIEnv *env, jobject thiz)
 {
     LOGI("[%s] enter\n", __FUNCTION__);
     
-    onCallbackFunct();
+    onLibCallbackFunct();
 }
 
 
@@ -306,7 +309,7 @@ static int registerMethods(JNIEnv* env) {
     
     //get java method id
     fields.midSfunct1 = env->GetStaticMethodID(clazz, "postEventFromNative",
-                                               "(I)V");
+                                               "(IIIII)V");
     if (fields.midSfunct1 == NULL) {
         LOGE("Can't find android/hardware/Camera.postEventFromNative");
         return -1;
