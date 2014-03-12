@@ -26,16 +26,18 @@ namespace android {
 
 Mutex ContinuaManager::mLock;
 int ContinuaManager::isCreate = 0;
-sp<ContinuaManager> ContinuaManager::instance;        
+sp<ContinuaManager> ContinuaManager::instance = NULL;        
 
 // construct a Continua Manager object
 sp<ContinuaManager> ContinuaManager::create()
 {
     LOGV("create");   
     if (!isCreate) {
-        sp<ContinuaManager> c = new ContinuaManager();
+        LOGV("[%s]: construct ContinuaManager.\n", __FUNCTION__); 
+//        sp<ContinuaManager> c = new ContinuaManager();
+        instance = new ContinuaManager();
         isCreate = 1;
-        instance =  c;
+//        instance =  c;
     }
     LOGV("[%s]: instance.get() = %p\n", __FUNCTION__, instance.get());  
     return instance;
@@ -53,6 +55,8 @@ ContinuaManager::ContinuaManager()
 ContinuaManager::~ContinuaManager()  
 {  
     LOGV("[%s] enter\n", __FUNCTION__);  
+    isCreate = 0;
+    instance = NULL;
 }  
  
  
@@ -83,6 +87,19 @@ void ContinuaManager::notifyCallback(int32_t msgType)
     if (listener != NULL) {
         listener->notify(msgType);
     }
+}
+
+//debug
+void ContinuaManager::printRefCount()
+{
+    int32_t strong = getStrongCount();
+    weakref_type *ref = getWeakRefs();
+    
+    LOGV("------------------------------------------------------\n");
+    LOGV("[%s]: Strong Ref Count[%d].\n", __FUNCTION__, (strong == INITIAL_STRONG_VALUE ? 0 : strong));
+    LOGV("[%s]: Weak Ref Count[%d].\n", __FUNCTION__, ref->getWeakCount());
+    LOGV("------------------------------------------------------\n");    
+        
 }
 
 

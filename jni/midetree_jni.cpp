@@ -43,6 +43,9 @@ using namespace android;
 #define JNI_FALSE  0 
 #define JNI_TRUE   1
 
+
+#define INITIAL_STRONG_VALUE (1<<28)
+
 static const char* const kClassName =
         "com/midetree/server/MidetreeService";
         
@@ -64,7 +67,10 @@ public:
      virtual void notify(int32_t msgType);
      
      
-     void release();  
+     void release();
+     
+     //debug
+    void printRefCount();  
      
     jobject mContinuaManagerJObjectWeak;     // weak reference to java object
     jclass  mContinuaManagerJClass;          // strong reference to java class
@@ -123,7 +129,19 @@ void JNIContinuaManagerContext::notify(int32_t msgType)
 
     env->CallStaticVoidMethod(mContinuaManagerJClass, fields.midSfunct1, msgType);
 }
+
+//debug
+void JNIContinuaManagerContext::printRefCount()
+{
+    int32_t strong = getStrongCount();
+    weakref_type *ref = getWeakRefs();
+    
+    LOGV("------------------------------------------------------\n");
+    LOGV("[%s]: Strong Ref Count[%d].\n", __FUNCTION__, (strong == INITIAL_STRONG_VALUE ? 0 : strong));
+    LOGV("[%s]: Weak Ref Count[%d].\n", __FUNCTION__, ref->getWeakCount());
+    LOGV("------------------------------------------------------\n");    
         
+}        
 //=================================================================
 // function
       
@@ -182,7 +200,14 @@ native_release(JNIEnv *env, jobject thiz)
         LOGV("native_release: context=%p ", context);
         // remove context to prevent further Java access
         context->decStrong(thiz);
+        context->printRefCount();
     }
+    
+    //clear ContinuaManager 
+    sp<ContinuaManager> manager = ContinuaManager::create();    
+    manager->printRefCount();    
+    manager.clear();
+    
 }
 
 static void 

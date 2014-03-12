@@ -4,6 +4,8 @@
  
 #include <utils/RefBase.h>  
 
+#define INITIAL_STRONG_VALUE (1<<28)
+
 void onCallbackFunct();
   
 namespace android {  
@@ -34,6 +36,10 @@ public:
     
     void setListener(const sp<ContinuaManagerListener>& listener);
     void notifyCallback(int32_t msgType);
+    
+    //debug
+    void printRefCount();
+   
     
 private:
     ContinuaManager();
